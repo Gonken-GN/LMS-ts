@@ -4,7 +4,8 @@ import userModel, { IUser } from "models/user.model";
 import ErrorHandler from "utils/ErrorHandler";
 import { CatchAsyncError } from "middleware/catchAsyncError";
 import jwt, { Secret } from "jsonwebtoken";
-
+import ejs from "ejs";
+import path from "path";
 interface IRegisterationBody {
   name: string;
   email: string;
@@ -32,6 +33,16 @@ export const registerationUser = CatchAsyncError(
       };
 
       const activationToken = createActivationToken(user);
+
+      const activationCode = activationToken.activationCode;
+
+      const data = { user: { name: user.name }, activationCode };
+      const html = await ejs.renderFile(path.join(__dirname, "../mails/activation-email.ejs"), data);
+      try {
+        
+      } catch (error) {
+        
+      }
     } catch (error) {
       return next(new ErrorHandler(error.message, 400));
     }
