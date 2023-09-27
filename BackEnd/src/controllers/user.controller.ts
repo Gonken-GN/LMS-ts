@@ -18,7 +18,7 @@ interface IActivationToken {
   token: string;
   activationCode: string;
 }
-
+// Send the activation code to the email address
 export const registerationUser = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -55,22 +55,22 @@ export const registerationUser = CatchAsyncError(
           message: `Please check your email: ${user.email} to activate your account`,
           activationToken: activationToken.token,
         });
-      } catch (error) {
+      } catch (error: any) {
         return next(new ErrorHandler(error.message, 400));
       }
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
   }
 );
 
 export const createActivationToken = (user: any): IActivationToken => {
-  const activationCode = Math.floor(1000 + Math.random() + 9000).toString();
+  const activationCode = Math.floor(1000 + Math.random() * 9000).toString();
 
   const token = jwt.sign(
     { user, activationCode },
     process.env.ACTIVATION_CODE as Secret,
-    { expiresIn: "5min" }
+    { expiresIn: "1day" }
   );
   return { token, activationCode };
 };
@@ -80,6 +80,70 @@ interface IActivationRequest {
   activation_code: string;
 }
 
-export const activateUser = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  
-});
+// Activate user and register it
+export const activateUser = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { activation_token, activation_code } =
+        req.body as IActivationRequest;
+
+      const newUser: { user: IUser; activationCode: string } = jwt.verify(
+        activation_token,
+        process.env.ACTIVATION_CODE as string
+      ) as { user: IUser; activationCode: string };
+      console.log(newUser.user);
+      if (newUser.activationCode !== activation_code) {
+        console.log(newUser.activationCode, activation_code);
+        return next(new ErrorHandler("Invalid activation code", 400));
+      }
+      const { name, email, password } = newUser.user;
+
+      const existUser = await userModel.findOne({ email });
+
+      if (existUser) {
+        return next(new ErrorHandler("User already exists", 404));
+      }
+      const user = await userModel.create({
+        name,
+        email,
+        password,
+      });
+
+      res.status(201).json({
+        success: true,
+        data: user,
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+// Login controller
+interface ILoginRequest {
+  email: string;
+  password: string;
+}
+
+export const loginUser = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { email, password } = req.body as ILoginRequest;
+
+      if (!email || !password) {
+        return next(new ErrorHandler("Please enter email and password!", 400));
+      }
+
+      const user = await userModel.findOne({ email }).select("+password");
+      if (!user) {
+        return next(new ErrorHandler("Invalid email or password", 400));
+      }
+      const isPasswordMatch = await user.comparePassword(password);
+      if (!isPasswordMatch) {
+        return next(new ErrorHandler("Password does not match", 400));
+      }
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
