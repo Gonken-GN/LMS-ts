@@ -91,15 +91,14 @@ export const activateUser = CatchAsyncError(
         activation_token,
         process.env.ACTIVATION_CODE as string
       ) as { user: IUser; activationCode: string };
-      console.log(newUser.user);
+
       if (newUser.activationCode !== activation_code) {
         console.log(newUser.activationCode, activation_code);
         return next(new ErrorHandler("Invalid activation code", 400));
       }
+
       const { name, email, password } = newUser.user;
-
       const existUser = await userModel.findOne({ email });
-
       if (existUser) {
         return next(new ErrorHandler("User already exists", 404));
       }
