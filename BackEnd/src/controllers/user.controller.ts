@@ -7,6 +7,7 @@ import jwt, { Secret } from "jsonwebtoken";
 import ejs from "ejs";
 import path from "path";
 import sendMail from "../utils/sendMail";
+import { sendToken } from "../utils/jwt";
 interface IRegisterationBody {
   name: string;
   email: string;
@@ -141,6 +142,24 @@ export const loginUser = CatchAsyncError(
       if (!isPasswordMatch) {
         return next(new ErrorHandler("Password does not match", 400));
       }
+
+      sendToken(user, 200, res);
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+// Logout user
+export const logout = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      res.cookie("access_token", "", { maxAge: 1 });
+      res.cookie("refresh_token", "", { maxAge: 1 });
+      res.status(200).json({
+        success: true,
+        message: "Logout successfully",
+      });
     } catch (error) {
       return next(new ErrorHandler(error.message, 400));
     }

@@ -1,5 +1,5 @@
 require("dotenv").config();
-import { Response } from "express";
+import { Response, json } from "express";
 import { IUser } from "models/user.model";
 import { redis } from "./redis";
 
@@ -14,9 +14,8 @@ interface ITokenOptions {
 export const sendToken = (user: IUser, statusCode: number, res: Response) => {
   const accessToken = user.signAccessToken();
   const refreshToken = user.signRefreshToken();
-
   // upload session to redis
-
+  redis.set(user._id, JSON.stringify(user) as any);
   // parse environment variables to integrates with fallback session storage
   const accessTokenExpire = parseInt(
     process.env.ACCESS_TOKEN_EXPIRE || "300",
@@ -32,13 +31,26 @@ export const sendToken = (user: IUser, statusCode: number, res: Response) => {
     expires: new Date(Date.now() + accessTokenExpire * 1000),
     maxAge: accessTokenExpire * 1000,
     httpOnly: true,
-    sameSite: 'lax',
+    sameSite: "lax",
   };
 
   const refreshTokenOptions: ITokenOptions = {
     expires: new Date(Date.now() + refreshTokenExpire * 1000),
     maxAge: refreshTokenExpire * 1000,
     httpOnly: true,
-    sameSite: 'lax',
+    sameSite: "lax",
   };
+
+  if (process.env.NODE_ENV === "production") {
+    accessTokenOptions.secure = true;
+  }
+  
+  res.cookie("access_token", accessToken, accessTokenOptions);
+  res.cookie("refresh_token", refreshToken, refreshTokenOptions);
+
+  res.status(statusCode).json({
+    success: true,
+    user,
+    accessToken,
+  });
 };

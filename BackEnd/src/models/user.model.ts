@@ -81,11 +81,11 @@ userSchema.methods.comparePassword = async function (
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-userSchema.methods.SignAccessToken = async function () {
+userSchema.methods.signAccessToken = function () {
   return jwt.sign({ id: this._id }, process.env.ACCESS_TOKEN || "");
 };
 
-userSchema.methods.SignRefreshToken = async function () {
+userSchema.methods.signRefreshToken = function () {
   return jwt.sign({ id: this._id }, process.env.REFRESH_TOKEN || "");
 };
 
