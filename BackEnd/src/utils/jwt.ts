@@ -10,8 +10,8 @@ interface ITokenOptions {
   sameSite: "lax" | "strict" | "none" | undefined;
   secure?: boolean;
 }
- // parse environment variables to integrates with fallback session storage
- const accessTokenExpire = parseInt(
+// parse environment variables to integrates with fallback session storage
+const accessTokenExpire = parseInt(
   process.env.ACCESS_TOKEN_EXPIRE || "300",
   10
 );
@@ -39,7 +39,6 @@ export const sendToken = (user: IUser, statusCode: number, res: Response) => {
   const refreshToken = user.signRefreshToken();
   // upload session to redis
   redis.set(user._id, JSON.stringify(user) as any);
- 
 
   if (process.env.NODE_ENV === "production") {
     accessTokenOptions.secure = true;
@@ -47,7 +46,7 @@ export const sendToken = (user: IUser, statusCode: number, res: Response) => {
   // setting up cookies
   res.cookie("access_token", accessToken, accessTokenOptions);
   res.cookie("refresh_token", refreshToken, refreshTokenOptions);
-  
+
   res.status(statusCode).json({
     success: true,
     user,
