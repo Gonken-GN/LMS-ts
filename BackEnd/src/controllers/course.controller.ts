@@ -1,14 +1,17 @@
-import { NextFunction, Request, Response } from "express";
 import { CatchAsyncError } from "../middleware/catchAsyncError";
 import ErrorHandler from "../utils/ErrorHandler";
-import cloudinary from "cloudinary";
+import sendMail from "../utils/sendMail";
 import { createCourse } from "../services/course.service";
-import courseModel from "../models/course.model";
 import { redis } from "../utils/redis";
+
+import { NextFunction, Request, Response } from "express";
+import cloudinary from "cloudinary";
 import mongoose from "mongoose";
 import ejs from "ejs";
 import path from "path";
-import sendMail from "../utils/sendMail";
+
+import courseModel from "../models/course.model";
+import notificationiModel from "../models/notification.model";
 
 export const uploadCourse = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -182,6 +185,11 @@ export const addQuestion = CatchAsyncError(
 
       // add this question to our course content
       courseContent.questions.push(newQuestion);
+      await notificationiModel.create({
+        user: req.user?._id,
+        title: "New Question",
+        message: `You have a new question in ${course?.name}`,
+      });
       // save the updated course
       await course.save();
       res.status(200).json({
@@ -335,7 +343,7 @@ export const addReplyToReview = CatchAsyncError(
       const course = await courseModel.findById(courseId);
       if (!course) {
         return next(new ErrorHandler("Course not found!", 404));
-      } 
+      }
       const review = course?.reviews?.find(
         (rev: any) => rev._id.toString() === reviewId
       );

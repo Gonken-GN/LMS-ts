@@ -1,20 +1,22 @@
 require("dotenv").config();
-import { Request, Response, NextFunction } from "express";
-import userModel, { IUser } from "../models/user.model";
 import ErrorHandler from "../utils/ErrorHandler";
 import { CatchAsyncError } from "../middleware/catchAsyncError";
-import jwt, { JwtPayload, Secret } from "jsonwebtoken";
-import ejs from "ejs";
-import path from "path";
+import { redis } from "../utils/redis";
 import sendMail from "../utils/sendMail";
 import {
   accessTokenOptions,
   refreshTokenOptions,
   sendToken,
 } from "../utils/jwt";
-import { redis } from "../utils/redis";
-import cloudinary from "cloudinary";
 import { getUserById } from "../services/user.service";
+
+import userModel, { IUser } from "../models/user.model";
+
+import { Request, Response, NextFunction } from "express";
+import jwt, { JwtPayload, Secret } from "jsonwebtoken";
+import cloudinary from "cloudinary";
+import path from "path";
+import ejs from "ejs";
 interface IRegisterationBody {
   name: string;
   email: string;
