@@ -8,7 +8,7 @@ import {
   refreshTokenOptions,
   sendToken,
 } from "../utils/jwt";
-import { getUserById } from "../services/user.service";
+import {getAllUser, getUserById} from "../services/user.service";
 
 import userModel, { IUser } from "../models/user.model";
 
@@ -393,3 +393,13 @@ export const updateProfilePicture = CatchAsyncError(
     }
   }
 );
+
+// get all users -- only for admin
+export const getAllUsersService = CatchAsyncError(
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        getAllUser(res);
+      }catch (error: any){
+        return next(new ErrorHandler(error.message, 400));
+      }
+    });

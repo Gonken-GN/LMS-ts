@@ -80,3 +80,13 @@ export const createOrder = CatchAsyncError(
     }
   }
 );
+
+// get all users -- only for admin
+export const get = CatchAsyncError(
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        getAllCourses(res);
+      }catch (error: any){
+        return next(new ErrorHandler(error.message, 400));
+      }
+    });

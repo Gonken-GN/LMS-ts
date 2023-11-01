@@ -1,7 +1,7 @@
 import { CatchAsyncError } from "../middleware/catchAsyncError";
 import ErrorHandler from "../utils/ErrorHandler";
 import sendMail from "../utils/sendMail";
-import { createCourse } from "../services/course.service";
+import {createCourse, getAllCourses} from "../services/course.service";
 import { redis } from "../utils/redis";
 
 import { NextFunction, Request, Response } from "express";
@@ -368,3 +368,13 @@ export const addReplyToReview = CatchAsyncError(
     }
   }
 );
+
+// get all users -- only for admin
+export const getAllCourseService = CatchAsyncError(
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        getAllCourses(res);
+      }catch (error: any){
+        return next(new ErrorHandler(error.message, 400));
+      }
+    });
