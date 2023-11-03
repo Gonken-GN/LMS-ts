@@ -8,7 +8,7 @@ import {
   refreshTokenOptions,
   sendToken,
 } from "../utils/jwt";
-import {getAllUser, getUserById} from "../services/user.service";
+import { getAllUser, getUserById, updateRoleService } from "../services/user.service";
 
 import userModel, { IUser } from "../models/user.model";
 
@@ -74,6 +74,7 @@ export const registerationUser = CatchAsyncError(
   }
 );
 
+// create activation token
 export const createActivationToken = (user: any): IActivationToken => {
   const activationCode = Math.floor(1000 + Math.random() * 9000).toString();
 
@@ -134,6 +135,7 @@ interface ILoginRequest {
   password: string;
 }
 
+// Login Controller
 export const loginUser = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -269,6 +271,7 @@ interface IUpdateUserInfo {
   email?: string;
 }
 
+// update user profile
 export const updateUserInfo = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -308,6 +311,7 @@ interface IUpdatePassword {
   newPassword: string;
 }
 
+// update user password
 export const updatePassword = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -396,10 +400,23 @@ export const updateProfilePicture = CatchAsyncError(
 
 // get all users -- only for admin
 export const getAllUsersService = CatchAsyncError(
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        getAllUser(res);
-      }catch (error: any){
-        return next(new ErrorHandler(error.message, 400));
-      }
-    });
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      getAllUser(res);
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+// update user role -- only for admin
+export const updateUserRole = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id, role } = req.body;
+      updateRoleService(res, id, role);
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);

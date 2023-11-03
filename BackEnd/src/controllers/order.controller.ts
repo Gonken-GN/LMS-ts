@@ -1,7 +1,7 @@
 import { CatchAsyncError } from "../middleware/catchAsyncError";
 import ErrorHandler from "../utils/ErrorHandler";
 import sendMail from "../utils/sendMail";
-import { newOrder } from "../services/order.service";
+import { getAllOrders, newOrder } from "../services/order.service";
 
 import orderModel, { IOrder } from "../models/order.model";
 import userModel from "../models/user.model";
@@ -72,7 +72,7 @@ export const createOrder = CatchAsyncError(
         title: "New Order",
         message: `You have a new order from ${course?.name}`,
       });
-     course.purchased ? course.purchased += 1 : course.purchased;
+      course.purchased ? (course.purchased += 1) : course.purchased;
       await course.save();
       newOrder(data, res, next);
     } catch (error) {
@@ -82,11 +82,12 @@ export const createOrder = CatchAsyncError(
 );
 
 // get all users -- only for admin
-export const get = CatchAsyncError(
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        getAllCourses(res);
-      }catch (error: any){
-        return next(new ErrorHandler(error.message, 400));
-      }
-    });
+export const getAllOrdersService = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      getAllOrders(res);
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
