@@ -11,6 +11,7 @@ import userRouter from "./src/routes/user.route";
 import courseRouter from "./src/routes/course.route";
 import orderRouter from "./src/routes/order.route";
 import noitificationRouter from "./src/routes/notifications.route";
+import analyticsRouter from "./src/routes/analytics.route";
 
 app.use(express.json({ limit: "50mb" }));
 
@@ -23,7 +24,14 @@ app.use(
 );
 
 // Routes
-app.use("/api/v1", userRouter, courseRouter, orderRouter, noitificationRouter);
+app.use(
+  "/api/v1",
+  userRouter,
+  courseRouter,
+  orderRouter,
+  noitificationRouter,
+  analyticsRouter
+);
 
 app.get("/test", (req: Request, res: Response, next: NextFunction) => {
   res.status(200).json({

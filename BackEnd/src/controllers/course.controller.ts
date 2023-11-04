@@ -13,6 +13,7 @@ import path from "path";
 import courseModel from "../models/course.model";
 import notificationiModel from "../models/notification.model";
 
+// Upload Course
 export const uploadCourse = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -34,6 +35,7 @@ export const uploadCourse = CatchAsyncError(
   }
 );
 
+// Edit Course
 export const editCourse = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -101,6 +103,7 @@ export const getSingleCourse = CatchAsyncError(
   }
 );
 
+// get all courses
 export const getAllCourse = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -162,6 +165,7 @@ interface IAddQuestionData {
   contentId: string;
 }
 
+// add question to courses
 export const addQuestion = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -210,6 +214,7 @@ interface IAddAnswerData {
   questionId: string;
 }
 
+// add answer in course question
 export const addAnswer = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -280,6 +285,7 @@ interface IAddReviewData {
   userId: string;
 }
 
+// add review in course
 export const addReview = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -375,6 +381,28 @@ export const getAllCourseService = CatchAsyncError(
     try {
       getAllCourses(res);
     } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+// Delete course -- only for admin
+export const deleteCourse = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+      const course = await courseModel.findById(id);
+      if (!course) {
+        return next(new ErrorHandler("User not found", 404));
+      }
+      await course.deleteOne({ id });
+      await redis.del(id);
+
+      res.status(200).json({
+        success: true,
+        message: "Course deleted successfuly",
+      });
+    } catch (error) {
       return next(new ErrorHandler(error.message, 400));
     }
   }

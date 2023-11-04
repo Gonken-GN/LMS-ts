@@ -8,7 +8,11 @@ import {
   refreshTokenOptions,
   sendToken,
 } from "../utils/jwt";
-import { getAllUser, getUserById, updateRoleService } from "../services/user.service";
+import {
+  getAllUser,
+  getUserById,
+  updateRoleService,
+} from "../services/user.service";
 
 import userModel, { IUser } from "../models/user.model";
 
@@ -415,6 +419,28 @@ export const updateUserRole = CatchAsyncError(
     try {
       const { id, role } = req.body;
       updateRoleService(res, id, role);
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+// Delete user -- only for admin
+export const deleteUser = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+      const user = await userModel.findById(id);
+      if (!user) {
+        return next(new ErrorHandler("User not found", 404));
+      }
+      await user.deleteOne({ id });
+      await redis.del(id);
+
+      res.status(200).json({
+        success: true,
+        message: "User deleted successfuly",
+      });
     } catch (error) {
       return next(new ErrorHandler(error.message, 400));
     }
