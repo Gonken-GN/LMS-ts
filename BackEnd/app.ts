@@ -12,6 +12,7 @@ import courseRouter from "./src/routes/course.route";
 import orderRouter from "./src/routes/order.route";
 import noitificationRouter from "./src/routes/notifications.route";
 import analyticsRouter from "./src/routes/analytics.route";
+import layoutRouter from "./src/routes/layout.route";
 
 app.use(express.json({ limit: "50mb" }));
 
@@ -30,7 +31,8 @@ app.use(
   courseRouter,
   orderRouter,
   noitificationRouter,
-  analyticsRouter
+  analyticsRouter,
+  layoutRouter
 );
 
 app.get("/test", (req: Request, res: Response, next: NextFunction) => {
