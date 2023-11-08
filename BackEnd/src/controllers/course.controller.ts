@@ -92,7 +92,7 @@ export const getSingleCourse = CatchAsyncError(
         .select(
           "-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links"
         );
-      await redis.set(courseId, JSON.stringify(course));
+      await redis.set(courseId, JSON.stringify(course), "EX", 604800);
       res.status(200).json({
         success: true,
         course,
@@ -324,7 +324,7 @@ export const addReview = CatchAsyncError(
         message: `${req.user?.name} has given a review in ${course?.name}`,
       };
       // create a notification
-
+      res
       res.status(200).json({
         success: true,
         course,
