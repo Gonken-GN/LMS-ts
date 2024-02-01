@@ -12,7 +12,7 @@
     "dev": "ts-node-dev --respawn --transpile-only server.ts",
     "start": "node build/server.js",
     "build": "tsc && npm run postbuild",
-    "postbuild": "cp -r ./build ./public" 
+    "postinstall": "npm run build"
   },
   "keywords": [],
   "author": "",
