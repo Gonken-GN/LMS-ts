@@ -60,7 +60,7 @@ export const createLayout = CatchAsyncError(
         success: true,
         message: "Layout successfully created",
       });
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
   }
@@ -127,7 +127,7 @@ export const editLayout = CatchAsyncError(
         success: true,
         message: "Layout successfully created",
       });
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
   }
@@ -143,7 +143,7 @@ export const getLayoutByType = CatchAsyncError(
         success: true,
         layout,
       });
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
   }

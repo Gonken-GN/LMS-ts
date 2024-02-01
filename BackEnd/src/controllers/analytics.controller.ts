@@ -16,7 +16,7 @@ export const getUserAnalytics = CatchAsyncError(
         success: true,
         users,
       });
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
   }
@@ -31,7 +31,7 @@ export const getCourseAnalytics = CatchAsyncError(
         success: true,
         courses,
       });
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
   }
@@ -46,7 +46,7 @@ export const getOrderAnalytics = CatchAsyncError(
         success: true,
         orders,
       });
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
   }

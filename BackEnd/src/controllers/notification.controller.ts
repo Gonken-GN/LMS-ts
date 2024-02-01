@@ -17,7 +17,7 @@ export const getNotifications = CatchAsyncError(
         success: true,
         notifications,
       });
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
     }
   }

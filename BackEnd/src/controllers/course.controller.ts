@@ -29,7 +29,7 @@ export const uploadCourse = CatchAsyncError(
         };
       }
       createCourse(data, res, next);
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
     }
   }
@@ -67,7 +67,7 @@ export const editCourse = CatchAsyncError(
         success: true,
         course,
       });
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
     }
   }
@@ -125,7 +125,7 @@ export const getAllCourse = CatchAsyncError(
         success: true,
         courses,
       });
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
     }
   }
@@ -153,7 +153,7 @@ export const getCourseByUser = CatchAsyncError(
         success: true,
         content,
       });
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
     }
   }
@@ -195,12 +195,12 @@ export const addQuestion = CatchAsyncError(
         message: `You have a new question in ${course?.name}`,
       });
       // save the updated course
-      await course.save();
+      await course?.save();
       res.status(200).json({
         success: true,
         courseContent,
       });
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
     }
   }
@@ -265,14 +265,14 @@ export const addAnswer = CatchAsyncError(
           template: "question-reply.ejs",
           data,
         });
-      } catch (error) {
+      } catch (error: any) {
         return next(new ErrorHandler(error.message, 500));
       }
       res.status(200).json({
         success: true,
         course,
       });
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
     }
   }
@@ -329,7 +329,7 @@ export const addReview = CatchAsyncError(
         success: true,
         course,
       });
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
     }
   }
@@ -369,7 +369,7 @@ export const addReplyToReview = CatchAsyncError(
         success: true,
         course,
       });
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
     }
   }
@@ -402,7 +402,7 @@ export const deleteCourse = CatchAsyncError(
         success: true,
         message: "Course deleted successfuly",
       });
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
   }

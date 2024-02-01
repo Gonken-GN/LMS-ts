@@ -159,7 +159,7 @@ export const loginUser = CatchAsyncError(
       }
 
       sendToken(user, 200, res);
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
   }
@@ -178,7 +178,7 @@ export const logout = CatchAsyncError(
         success: true,
         message: "Logout successfully",
       });
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
   }
@@ -228,7 +228,7 @@ export const updateAccessToken = CatchAsyncError(
         success: true,
         accessToken,
       });
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
   }
@@ -240,7 +240,7 @@ export const getUserInfo = CatchAsyncError(
     try {
       const userId = req.user?._id;
       getUserById(userId, res);
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
   }
@@ -264,7 +264,7 @@ export const socialAuth = CatchAsyncError(
       } else {
         sendToken(user, 200, res);
       }
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
   }
@@ -304,7 +304,7 @@ export const updateUserInfo = CatchAsyncError(
         success: true,
         user,
       });
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
   }
@@ -344,7 +344,7 @@ export const updatePassword = CatchAsyncError(
         success: true,
         user,
       });
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
   }
@@ -397,7 +397,7 @@ export const updateProfilePicture = CatchAsyncError(
         success: true,
         user,
       });
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
   }
@@ -420,7 +420,7 @@ export const updateUserRole = CatchAsyncError(
     try {
       const { id, role } = req.body;
       updateRoleService(res, id, role);
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
   }
@@ -442,7 +442,7 @@ export const deleteUser = CatchAsyncError(
         success: true,
         message: "User deleted successfuly",
       });
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
   }

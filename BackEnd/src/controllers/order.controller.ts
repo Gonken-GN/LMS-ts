@@ -61,11 +61,11 @@ export const createOrder = CatchAsyncError(
             data: mailData,
           });
         }
-      } catch (error) {
+      } catch (error: any) {
         return next(new ErrorHandler(error.message, 500));
       }
       user?.courses.push(course?._id);
-      await user.save();
+      await user?.save();
 
       await notificationiModel.create({
         user: user?._id,
@@ -75,7 +75,7 @@ export const createOrder = CatchAsyncError(
       course.purchased ? (course.purchased += 1) : course.purchased;
       await course.save();
       newOrder(data, res, next);
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
     }
   }
