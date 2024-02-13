@@ -10,9 +10,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --respawn --transpile-only server.ts",
-    "start": "node build/server.js",
-    "build": "tsc && npm run postbuild",
-    "postinstall": "npm run build"
+    "start": "ts-node server.ts",
+    "build": "tsc -p ."
   },
   "keywords": [],
   "author": "",
